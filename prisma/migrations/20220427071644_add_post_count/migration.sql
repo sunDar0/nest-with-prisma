@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `User` MODIFY `postCount` INTEGER NOT NULL DEFAULT 0;
