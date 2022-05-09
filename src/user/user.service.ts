@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserBody } from './dto/create_user.dto';
-import { GetUserParam } from './dto/get_user.dto';
 import { UserRepository } from './user.repository';
 import { UserValidator } from './user.validator';
 
@@ -12,11 +11,19 @@ export class UserService {
   ){}
 
   getUsers(){
-    return this.userRepo.getUsers();
+    const users = this.userRepo.getUsers();
+    users.then(v => v.map(vv => {
+      vv.id *= 2;
+      vv.name = vv.name?.repeat(10);
+      return v;
+    })).then(v => console.log(v.length))
+    return users
   }
 
-  getUser(param: GetUserParam){
-    return this.userRepo.getUser(this.userValidator.getUserValidator(param));
+  getUser(userId){
+    const userRepo = this.userRepo.getUser(this.userValidator.getUserValidator(userId));
+    
+    return userRepo;
   }
 
   

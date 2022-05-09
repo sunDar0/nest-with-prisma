@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,37 +8,65 @@ datasource db {
 }
 
 model User {
- id        Int      @id @default(autoincrement())
- createdAt DateTime @default(now())
- email     String   @unique
- postCount Int      @default(0)
- name      String?
- role      Role     @default(USER)
- posts     Post[]
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  postCount Int      @default(0)
+  posts     Post[]
 }
 
 model Post {
- id        Int      @id @default(autoincrement())
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
- published Boolean  @default(false)
- title     String   @db.VarChar(255)
- content   String   @db.VarChar(500)
- author    User?    @relation(fields: [authorId], references: [id])
- authorId  Int?
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  title     String   @db.VarChar(255)
+  authorId  Int?
+  content   String   @db.VarChar(500)
+  author    User?    @relation(fields: [authorId], references: [id])
+
+  @@index([authorId], map: "Post_authorId_fkey")
 }
 
 model Emotions {
- id        Int      @id @default(autoincrement())
- createdAt DateTime @default(now())
- updatedAt DateTime @updatedAt
- title     String   @db.VarChar(255)
- content   String   @db.VarChar(500)
- useCount  Int      @default(0)
- type String @db.VarChar(50)
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String   @db.VarChar(500)
+  useCount  Int      @default(0)
+  type      String   @db.VarChar(50)
+}
+
+model EmotionCategories {
+  idx                 Int      @id @default(autoincrement()) @db.UnsignedInt
+  group_id            String   @default("none") @db.VarChar(11)
+  emotion_name        String?  @db.VarChar(100)
+  description         String?  @db.VarChar(300)
+  thumbnail_image_url String?  @db.VarChar(200)
+  screen_image_url    String?  @db.VarChar(200)
+  polaroid_image_url  String?  @db.VarChar(200)
+  button_image_url    String?  @db.VarChar(200)
+  is_deleted          Boolean  @default(false)
+  updated_at          DateTime @default(now()) @updatedAt @db.DateTime(0)
+  created_at          DateTime @default(now()) @db.DateTime(0)
+}
+
+model EmotionUsers {
+  idx                            BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  member_client_idx              BigInt    @db.UnsignedBigInt
+  last_create_emotion_record_idx Int?
+  last_played_at                 DateTime? @db.DateTime(0)
+  is_deleted                     Boolean   @default(false)
+  updated_at                     DateTime  @default(now()) @db.DateTime(0)
+  created_at                     DateTime  @default(now()) @db.DateTime(0)
+
+  @@index([member_client_idx], map: "member_client_idx")
 }
 
 enum Role {
- USER
- ADMIN
+  USER
+  ADMIN
 }

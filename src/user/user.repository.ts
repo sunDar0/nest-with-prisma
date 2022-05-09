@@ -17,6 +17,7 @@ export class UserRepository
 
   async getUser(userFindUniqueArgs: ReturnType<UserValidator['getUserValidator']>)
   {
+    
     return await this.prismaService.user.findUnique(userFindUniqueArgs);
   }
 

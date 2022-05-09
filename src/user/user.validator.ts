@@ -15,7 +15,7 @@ export class UserValidator
     });
   }
 
-  getUserValidator({userId}){
+  getUserValidator(userId){
     return Prisma.validator<Prisma.UserFindUniqueArgs>()({
       rejectOnNotFound: true,
       where: {

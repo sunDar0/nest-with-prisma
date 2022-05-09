@@ -1,14 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Logger, LoggerService, Param, Patch, Post } from '@nestjs/common';
 import { CreateUserBody } from './dto/create_user.dto';
-import { GetUserParam } from './dto/get_user.dto';
 import { UserService } from './user.service';
-
+import { ValidationPipe } from '../pipe/validation.pipe';
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService)
-  {
-
-  }
+  constructor(
+    private readonly userService: UserService,
+    @Inject(Logger) private readonly logger:LoggerService
+  )
+  { }
 
   @Get()
   getUsers()
@@ -17,10 +17,9 @@ export class UserController {
   }
 
   @Get(':userId')
-  getUser(@Param() param:GetUserParam) 
+  getUser(@Param('userId', ValidationPipe) userId: number) 
   {
-    console.log(param);
-    return this.userService.getUser(param);
+    return this.userService.getUser(userId);
   }
 
   @Post()
