@@ -66,6 +66,15 @@ model EmotionUsers {
   @@index([member_client_idx], map: "member_client_idx")
 }
 
+model Admin {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  email     String     @unique(map: "User_email_key")
+  name      String?
+  role      Role @default(USER)
+  postCount Int        @default(0)
+}
+
 enum Role {
   USER
   ADMIN
