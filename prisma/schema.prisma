@@ -15,6 +15,7 @@ model User {
   role      Role     @default(USER)
   postCount Int      @default(0)
   posts     Post[]
+  Reply     Reply[]
 }
 
 model Post {
@@ -40,6 +41,17 @@ model Emotions {
   type      String   @db.VarChar(50)
 }
 
+model TestTable {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String   @db.VarChar(500)
+  useCount  Int      @default(0)
+  type      String   @db.VarChar(50)
+}
+
+
 model EmotionCategories {
   idx                 Int      @id @default(autoincrement()) @db.UnsignedInt
   group_id            String   @default("none") @db.VarChar(11)
@@ -50,7 +62,7 @@ model EmotionCategories {
   polaroid_image_url  String?  @db.VarChar(200)
   button_image_url    String?  @db.VarChar(200)
   is_deleted          Boolean  @default(false)
-  updated_at          DateTime @default(now()) @updatedAt @db.DateTime(0)
+  updated_at          DateTime @default(now()) @updatedAt
   created_at          DateTime @default(now()) @db.DateTime(0)
 }
 
@@ -60,19 +72,23 @@ model EmotionUsers {
   last_create_emotion_record_idx Int?
   last_played_at                 DateTime? @db.DateTime(0)
   is_deleted                     Boolean   @default(false)
-  updated_at                     DateTime  @default(now()) @db.DateTime(0)
+  updated_at                     DateTime  @updatedAt
   created_at                     DateTime  @default(now()) @db.DateTime(0)
 
   @@index([member_client_idx], map: "member_client_idx")
 }
 
-model Admin {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  email     String     @unique(map: "User_email_key")
-  name      String?
-  role      Role @default(USER)
-  postCount Int        @default(0)
+model Reply {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  title     String   @db.VarChar(255)
+  authorId  Int?
+  content   String   @db.VarChar(500)
+  User      User?    @relation(fields: [authorId], references: [id], map: "Reply_ibfk_1")
+
+  @@index([authorId], map: "Post_authorId_fkey")
 }
 
 enum Role {
