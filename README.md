@@ -28,7 +28,7 @@ npx prisma init
 ```bash
 #.env 추가
 ...
-DATABASE_URL="mysql://{id}@{host}:{port}/{databaseName}"
+DATABASE_URL="mysql://{id}:{password}@{host}:{port}/{databaseName}"
 ...
 ```
 ### schema file 구성
